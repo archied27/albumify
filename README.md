@@ -1,2 +1,3 @@
 # albumify
-Organise Spotify saved albumsFirst ML project
+Organise Spotify saved albums
+My first ML project
