@@ -14,6 +14,8 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 SCOPE = "user-library-read"
 
+_token_store: dict = {}
+
 def login():
     params = {
         "client_id": CLIENT_ID,
@@ -26,7 +28,6 @@ def login():
     return fastapi.responses.RedirectResponse(auth_url)
 
 def callback(code: str):
-    print("hello")
     response = requests.post(
         "https://accounts.spotify.com/api/token",
         data={
@@ -39,4 +40,10 @@ def callback(code: str):
     )
 
     response = response.json()
-    return {"message": "Authenticated", "access_token": response["access_token"]}
+
+    _token_store["access_token"] = response["access_token"]
+
+    return {"message": "Authenticated"}
+
+def getToken():
+    return _token_store.get("access_token")
