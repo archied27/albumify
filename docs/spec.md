@@ -1,7 +1,8 @@
 # albumify spec
 Status: in development
 ## Goals
-- To effectively organise, view and sort Spotify shared albums
+- To effectively organise, view and sort Spotify saved albums
+    - encourage listening via albums not songs
 - Through a React frontend
 - Using ML techniques
 ## Checklist
@@ -9,7 +10,7 @@ Status: in development
 - [x] Add caching for artist fetches (many artists across library)
 - [ ] Get relevant data needed for ML
     - [x] spotify: album release year, artist(s) genre, average track duration
-    - [ ]last.fm: artist tags, album tags, 
+    - [ ] last.fm: artist tags, album tags, 
 - [ ] Derive new features
     - genre embedding
     - era encoding i.e 70s, 80s, etc
