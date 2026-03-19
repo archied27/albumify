@@ -5,10 +5,11 @@ Status: in development
 - Through a React frontend
 - Using ML techniques
 ## Checklist
-- [ ] Get users saved albums via oAuth
+- [x] Get users saved albums via oAuth
+- [x] Add caching for artist fetches (many artists across library)
 - [ ] Get relevant data needed for ML
-    - spotify: album release year, artist(s) genre, average track duration
-    - last.fm: artist tags, album tags, 
+    - [x] spotify: album release year, artist(s) genre, average track duration
+    - [ ]last.fm: artist tags, album tags, 
 - [ ] Derive new features
     - genre embedding
     - era encoding i.e 70s, 80s, etc
@@ -18,3 +19,4 @@ Status: in development
 - [ ] Create the frontend
 ## Possible Extensions
 - More ML algorithms? Choose an album from a text prompt?
+- Random Album
