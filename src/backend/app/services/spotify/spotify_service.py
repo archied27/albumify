@@ -4,36 +4,51 @@ import sqlite3
 
 BASE_URL = "https://api.spotify.com/v1"
 
-def updateAlbumsDb(album):
+def updateDb(album):
     print(f"Adding {album['name']} by {album['artists'][0]['name']}")
     
     # updates the album table in database with albums info
     with sqlite3.connect("app/db/albumify.db") as conn:
         cur = conn.cursor()
 
-        # artist = artistsGenreAndPop(album['artists'])
-
         # update albums table 
-        cur.execute("INSERT INTO albums \
+        cur.execute("INSERT OR IGNORE INTO albums \
             (id, url, album_popularity, album_name, release_date, cover_path, avg_track_duration)\
             VALUES(?, ?, ?, ?, ?, ?, ?);",
             (album['id'], album['external_urls']['spotify'], album['popularity'], album['name'], 
             album['release_date'], album['images'][0]['url'], avgTrackDuration(album['tracks']['items'])) )
 
-        #conn.commit()
-        #conn.close()
+        # update all info for each artist on album
+        artists = album['artists']
+        for artist in artists:
+            artistInfo = getArtistInfo(artist['id'], cur)
+            if artistInfo['message'] == 'already in db':
+                continue
+            if artistInfo['message'] == "success":
+                # update artists table
+                cur.execute("INSERT OR IGNORE INTO artists \
+                    (id, url, artist_popularity, artist_name)\
+                    VALUES(?, ?, ?, ?);",
+                    (artist['id'], artistInfo['url'], artistInfo['popularity'], artistInfo['name']))
+                
+                # link artist(s) to album
+                cur.execute("INSERT OR IGNORE INTO album_artists\
+                    (album_id, artist_id)\
+                    VALUES(?, ?);", (album['id'], artist['id']))
+                
+                for genre in artistInfo['genres']:
+                    # add genre to genre table if not already there
+                    cur.execute("INSERT OR IGNORE INTO genres\
+                    (genre_name) VALUES(?)", (genre,))
 
-def artistsGenreAndPop(artists):
-    # takes an array of artists and returns their genres and avg popularity
-    genres = []
-    totalPop = 0
+                    # link genre to artist
+                    cur.execute("SELECT id FROM genres WHERE genre_name = ?", (genre,))
+                    genreId = cur.fetchone()[0] # select genre's id
+                    cur.execute("INSERT OR IGNORE INTO artist_genres\
+                    (artist_id, genre_id) VALUES(?, ?)", (artist['id'], genreId))
 
-    for artist in artists:
-        info = getArtistInfo(artist['id'])
-        totalPop += info['popularity']
-        genres = genres + info['genres'] # add all genres from all artists
-
-    return {"genres": genres, "popularity":totalPop/len(artists)}
+            else:
+                print(f"error fetching {artist['name']}")
 
 def avgTrackDuration(tracks):
     # takes an array of tracks and returns their average duration
@@ -47,7 +62,7 @@ def avgTrackDuration(tracks):
     return totalSeconds/trackNo
 
 def getSavedAlbums():
-    # calls updateAlbumsDb with all albums in users library
+    # calls updateDb with all albums in users library
     token = getToken()
     if token is not None:
         # set up requests url, headers and params
@@ -64,7 +79,7 @@ def getSavedAlbums():
             for i in data["items"]:
                 # for every album
                 album = i['album']
-                updateAlbumsDb(album)
+                updateDb(album)
             
             params = {}
 
@@ -73,8 +88,16 @@ def getSavedAlbums():
     else:
         return {"message": "not authenticated"}
 
-def getArtistInfo(id):
+def getArtistInfo(id, cur):
     # returns spotify api artist info
+    
+    # if already in database
+    cur.execute("SELECT 1 FROM artists WHERE (id=?)", (id,))
+    if cur.fetchone() is not None:
+        print("WORKSE")
+        return {"message": "already in db"}
+
+    # if not already in database
     token = getToken()
     if token is not None:
         url = BASE_URL + f"/artists/{id}"
@@ -83,7 +106,7 @@ def getArtistInfo(id):
         resp = requests.get(url, headers=headers)
         data = resp.json()
 
-        return {"message": "success", "genres": data['genres'], "popularity": data['popularity']}
+        return {"message": "success", "genres": data['genres'], "popularity": data['popularity'], "name": data['name'], "url": data['external_urls']['spotify']}
         
     else:
         return {"message": "not authenticated"}
