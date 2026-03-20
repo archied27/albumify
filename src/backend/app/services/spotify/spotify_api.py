@@ -1,11 +1,16 @@
+"""
+handles spotify api calls
+and updating the database with spotify's features
+"""
+
 from app.services.spotify.auth import login, getToken
 import requests
 import sqlite3
 
 BASE_URL = "https://api.spotify.com/v1"
 
-def updateDb(album):
-    print(f"Adding {album['name']} by {album['artists'][0]['name']}")
+def albumUpdateDb(album):
+    # updates database with album information
     
     # updates the album table in database with albums info
     with sqlite3.connect("app/db/albumify.db") as conn:
@@ -61,7 +66,7 @@ def avgTrackDuration(tracks):
 
     return totalSeconds/trackNo
 
-def getSavedAlbums():
+def updateDb():
     # calls updateDb with all albums in users library
     token = getToken()
     if token is not None:
@@ -79,7 +84,7 @@ def getSavedAlbums():
             for i in data["items"]:
                 # for every album
                 album = i['album']
-                updateDb(album)
+                albumUpdateDb(album)
             
             params = {}
 
@@ -94,7 +99,6 @@ def getArtistInfo(id, cur):
     # if already in database
     cur.execute("SELECT 1 FROM artists WHERE (id=?)", (id,))
     if cur.fetchone() is not None:
-        print("WORKSE")
         return {"message": "already in db"}
 
     # if not already in database

@@ -52,9 +52,41 @@ def createAlbumArtistsDb(cur):
         FOREIGN KEY(album_id) REFERENCES album(id) ON DELETE CASCADE,\
         FOREIGN KEY(artist_id) REFERENCES artist(id) ON DELETE CASCADE)")
 
+def createTagsDb(cur):
+    # creates tags table
+    # used to store lastfm tags
+    cur.execute("CREATE TABLE IF NOT EXISTS tags(\
+        id INTEGER PRIMARY KEY AUTOINCREMENT,\
+        name TEXT UNIQUE NOT NULL)")
+
+def createAlbumTagsDb(cur):
+    # creates album_tags table
+    # used to link albums with their tags and corresponding weight (many to many)
+    cur.execute("CREATE TABLE IF NOT EXISTS album_tags(\
+        album_id TEXT NOT NULL,\
+        tag_id INTEGER NOT NULL,\
+        weight INTEGER,\
+        PRIMARY KEY (album_id, tag_id),\
+        FOREIGN KEY(album_id) REFERENCES album(id) ON DELETE CASCADE,\
+        FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE)")
+
+def createArtistTagsDb(cur):
+    # creates artist_tags table
+    # used to link artists with their tags and corresponding weight
+    cur.execute("CREATE TABLE IF NOT EXISTS artist_tags(\
+        artist_id TEXT NOT NULL,\
+        tag_id INTEGER NOT NULL,\
+        weight INTEGER,\
+        PRIMARY KEY (artist_id, tag_id),\
+        FOREIGN KEY(artist_id) REFERENCES artists(id) ON DELETE CASCADE,\
+        FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE)")
+
 def deleteAllTables(cur):
+    cur.execute("DROP TABLE IF EXISTS artist_tags")
+    cur.execute("DROP TABLE IF EXISTS album_tags")
     cur.execute("DROP TABLE IF EXISTS artist_genres")
     cur.execute("DROP TABLE IF EXISTS album_artists")
+    cur.execute("DROP TABLE IF EXISTS tags")
     cur.execute("DROP TABLE IF EXISTS artists")
     cur.execute("DROP TABLE IF EXISTS genres")
     cur.execute("DROP TABLE IF EXISTS albums")
@@ -63,8 +95,11 @@ def createAllTables(cur):
     createAlbumDb(cur)
     createGenreDb(cur)
     createArtistDb(cur)
+    createTagsDb(cur)
     createAlbumArtistsDb(cur)
     createArtistGenreDb(cur)
+    createAlbumTagsDb(cur)
+    createArtistTagsDb(cur)
 
 if __name__ == "__main__":
     con = sqlite3.connect('src/backend/app/db/albumify.db')

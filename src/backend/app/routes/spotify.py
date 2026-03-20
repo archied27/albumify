@@ -1,5 +1,9 @@
+"""
+fastapi router for spotify services
+"""
+
 from app.services.spotify.auth import login, callback
-from app.services.spotify.spotify_service import getSavedAlbums
+from app.services.spotify.spotify_api import updateDb
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -8,10 +12,10 @@ router = APIRouter()
 def auth():
     return login()
 
-@router.get("/callback")
+@router.get("/callback") # used for oauth not for direct use
 def cb(code: str):
     return callback(code)
 
-@router.get("/get_albums")
+@router.get("/updatedb") # stores all spotify features into db
 def albums():
-    return getSavedAlbums()
+    return updateDb()
