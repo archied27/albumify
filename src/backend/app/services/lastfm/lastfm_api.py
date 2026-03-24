@@ -8,6 +8,7 @@ import dotenv
 import os
 import json
 import re
+import time
 
 dotenv.load_dotenv()
 API_KEY = os.getenv("LAST_FM_KEY")
@@ -54,7 +55,7 @@ def artistUpdateDb(artist, artistId, cur):
 def updateDb():
     # fetches and updates db with all album and artist tags
     # which are already in db
-    with sqlite3.connect("src/backend/app/db/albumify.db") as conn:
+    with sqlite3.connect("app/db/albumify.db") as conn:
         cur = conn.cursor()
         # get all album id's, names, and artist names
         cur.execute("SELECT albums.id, albums.album_name, artists.artist_name\
@@ -64,7 +65,6 @@ def updateDb():
         albums = cur.fetchall()
         # update db with all album tags
         for album in albums:
-            print(f"Adding {album[1]}")
             albumUpdateDb(album[1], album[2], album[0], cur)
 
         # get all artist ids and names
@@ -73,7 +73,6 @@ def updateDb():
         artists = cur.fetchall()
         # update db with all artists tags
         for artist in artists:
-            print(f"Adding {artist[1]}")
             artistUpdateDb(artist[1], artist[0], cur)
     return {"message": "db updated"}
 
@@ -101,12 +100,16 @@ def getAlbumTags(album, artist):
     }
 
     resp = requests.get(BASE_URL, params=params)
-    data = resp.json()
 
     # clean data to only show tag name and corresponding weight
     if resp.status_code == 200:
+        data = resp.json()
         tags = data['toptags']['tag']
         tags = [{"name": tag['name'].lower(), "weight": tag['count']} for tag in tags]
+    else:
+        print(f"ERROR WITH {album}")
+
+    time.sleep(0.25)
     return tags
 
 def getArtistTags(artist):
@@ -122,12 +125,11 @@ def getArtistTags(artist):
     }
 
     resp = requests.get(BASE_URL, params=params)
-    data = resp.json()
 
     # clean data to only show tag name and corresponding weight
     if resp.status_code == 200:
+        data = resp.json()
         tags = data['toptags']['tag']
         tags = [{"name": tag['name'].lower(), "weight": tag['count']} for tag in tags]
+    time.sleep(0.25)
     return tags
-
-updateDb()

@@ -1,0 +1,53 @@
+"""
+reads all relevant information from database ready for data preprocessing
+"""
+
+import sqlite3
+import pandas as pd
+import json
+
+DB_PATH = "src/backend/app/db/albumify.db"
+
+# query to select per album
+# # # album_id, album_name, release_date, album_popularity, avg_track_duration
+# # # artist_names, avg_artist_pop, genres, album_tags, artist_tags
+QUERY = """
+SELECT
+    a.id AS album_id,
+    a.album_name,
+    a.release_date,
+    a.album_popularity,
+    a.avg_track_duration,
+    JSON_GROUP_ARRAY(DISTINCT ar.artist_name) AS artist_names,
+    AVG(ar.artist_popularity) AS avg_artist_popularity,
+    JSON_GROUP_ARRAY(DISTINCT g.genre_name) AS genres,
+    JSON_GROUP_ARRAY(
+        DISTINCT JSON_OBJECT('tag', t_album.name, 'weight', at_album.weight)
+    ) AS album_tags,
+    JSON_GROUP_ARRAY(
+        DISTINCT JSON_OBJECT('tag', t_artist.name, 'weight', at_artist.weight)
+    ) AS artist_tags
+FROM albums a
+LEFT JOIN album_artists aa ON a.id = aa.album_id
+LEFT JOIN artists ar ON aa.artist_id = ar.id
+LEFT JOIN artist_genres ag ON ar.id = ag.artist_id
+LEFT JOIN genres g ON ag.genre_id = g.id
+LEFT JOIN album_tags at_album ON a.id = at_album.album_id
+LEFT JOIN tags t_album ON at_album.tag_id = t_album.id
+LEFT JOIN artist_tags at_artist ON ar.id = at_artist.artist_id
+LEFT JOIN tags t_artist ON at_artist.tag_id = t_artist.id
+GROUP BY a.id
+"""
+
+def loadAlbumsDf():
+    # returns dataframe of album info
+    # ready for preprocessing
+
+    # read sql info
+    with sqlite3.connect(DB_PATH) as con:
+        df = pd.read_sql_query(QUERY, con)
+
+    return df
+
+df = loadAlbumsDf()
+print(df.tail())

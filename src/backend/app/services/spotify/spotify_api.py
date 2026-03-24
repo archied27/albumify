@@ -28,6 +28,11 @@ def albumUpdateDb(album):
         for artist in artists:
             artistInfo = getArtistInfo(artist['id'], cur)
             if artistInfo['message'] == 'already in db':
+                 # link artist(s) to album
+                 # still need to do if artist is still in db
+                cur.execute("INSERT OR IGNORE INTO album_artists\
+                    (album_id, artist_id)\
+                    VALUES(?, ?);", (album['id'], artist['id']))
                 continue
             if artistInfo['message'] == "success":
                 # update artists table
@@ -40,7 +45,7 @@ def albumUpdateDb(album):
                 cur.execute("INSERT OR IGNORE INTO album_artists\
                     (album_id, artist_id)\
                     VALUES(?, ?);", (album['id'], artist['id']))
-                
+
                 for genre in artistInfo['genres']:
                     # add genre to genre table if not already there
                     cur.execute("INSERT OR IGNORE INTO genres\
