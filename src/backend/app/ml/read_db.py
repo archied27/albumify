@@ -47,7 +47,18 @@ def loadAlbumsDf():
     with sqlite3.connect(DB_PATH) as con:
         df = pd.read_sql_query(QUERY, con)
 
+    # set all features to correct formats
+    df['artist_names'] = df['artist_names'].apply(json.loads)
+    df['genres'] = df['genres'].apply(json.loads)
+
+    df['album_tags'] = df['album_tags'].apply(lambda x: parseJsonColumn(x, 'tag'))
+    df['artist_tags'] = df['artist_tags'].apply(lambda x: parseJsonColumn(x, 'tag'))
+
     return df
 
-df = loadAlbumsDf()
-print(df.tail())
+def parseJsonColumn(val, nullCheckKey='tag'):
+    # converts a string of json into actual json
+    # also handles nulls
+    parsed = json.loads(val)
+    filtered = [item for item in parsed if item.get(nullCheckKey) is not None]
+    return filtered if filtered else None
