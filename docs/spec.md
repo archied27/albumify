@@ -11,9 +11,8 @@ Status: in development
 - [x] Get relevant data needed for ML
     - [x] spotify: album release year, artist(s) genre, average track duration
     - [x] last.fm: artist tags, album tags, 
-- [ ] Derive new features
-    - [ ] genre embedding
-    - [ ] era encoding i.e 70s, 80s, etc
+- [x] Derive new features
+    - [x] era encoding i.e 70s, 80s, etc
 - [ ] Create a clustering model to cluster together albums
 - [ ] Add basic organisation and sorting features (year, etc)
 - [ ] Fully create a functional backend
