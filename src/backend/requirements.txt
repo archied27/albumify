@@ -1,1 +1,1 @@
-fastapi, uvicorn, requests, python-dotenv, pandas
+fastapi, uvicorn, requests, python-dotenv, pandas, numpy, scikit-learn

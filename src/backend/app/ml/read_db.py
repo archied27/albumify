@@ -5,8 +5,7 @@ reads all relevant information from database ready for data preprocessing
 import sqlite3
 import pandas as pd
 import json
-
-DB_PATH = "src/backend/app/db/albumify.db"
+import os
 
 # query to select per album
 # # # album_id, album_name, release_date, album_popularity, avg_track_duration
@@ -39,17 +38,17 @@ LEFT JOIN tags t_artist ON at_artist.tag_id = t_artist.id
 GROUP BY a.id
 """
 
-def loadAlbumsDf():
+def loadAlbumsDf(path):
     # returns dataframe of album info
     # ready for preprocessing
 
     # read sql info
-    with sqlite3.connect(DB_PATH) as con:
+    with sqlite3.connect(path) as con:
         df = pd.read_sql_query(QUERY, con)
 
     # set all features to correct formats
     df['artist_names'] = df['artist_names'].apply(json.loads)
-    df['genres'] = df['genres'].apply(json.loads)
+    df['genres'] = df['genres'].apply(lambda x: [g for g in json.loads(x) if g is not None] or None)
 
     df['album_tags'] = df['album_tags'].apply(lambda x: parseJsonColumn(x, 'tag'))
     df['artist_tags'] = df['artist_tags'].apply(lambda x: parseJsonColumn(x, 'tag'))
