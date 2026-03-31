@@ -1,12 +1,12 @@
 """
 preprocess the dataframe ready for model
-returns df ready for model, original model for reference, and the scaler used
+returns df ready for model, original model for reference, and the scaler used and reducer used
 """
 
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
-from read_db import loadAlbumsDf
+import umap
 
 def preprocess(df):
     # release year
@@ -24,7 +24,7 @@ def preprocess(df):
     all_album_tags = set(t['tag'] for tags in df['album_tags'].dropna() for t in tags)
     album_tag_df = pd.DataFrame(df['album_tags'].apply(lambda x: buildTagVector(x, all_album_tags)).tolist())
     all_artist_tags = set(t['tag'] for tags in df['artist_tags'].dropna() for t in tags)
-    artist_tag_df = pd.DataFrame(df['artist_tags'].apply(lambda x: buildTagVector(x, all_tags)).tolist())
+    artist_tag_df = pd.DataFrame(df['artist_tags'].apply(lambda x: buildTagVector(x, all_artist_tags)).tolist())
 
     # build ml df
     df_ml = df.drop(columns=['album_id', 'album_name', 'artist_names', 
@@ -42,7 +42,11 @@ def preprocess(df):
     scaler = StandardScaler()
     df_scaled = pd.DataFrame(scaler.fit_transform(df_ml), columns=df_ml.columns)
 
-    return df_scaled, df, scaler
+    # reduce
+    reducer = umap.UMAP(n_neighbors=30, n_components=10, min_dist=0, random_state=42)
+    df_scaled = reducer.fit_transform(df_scaled)
+
+    return df_scaled, df, scaler, reducer
 
 def parseReleaseYear(date):
     if pd.isna(date):

@@ -14,7 +14,8 @@ def createAlbumDb(cur):
         album_name TEXT NOT NULL,\
         release_date DATETIME,\
         cover_path TEXT,\
-        avg_track_duration REAL)")
+        avg_track_duration REAL,\
+        cluster INTEGER)")
 
 def createArtistDb(cur):
     # creates artist table
