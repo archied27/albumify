@@ -8,7 +8,7 @@ from hdbscan import HDBSCAN
 def train_model(df_scaled, df_ref):
     # takes in scaled df and reference df / original df
     clusterer = HDBSCAN(
-        min_cluster_size=15, 
+        min_cluster_size=int(len(df_scaled)*0.02),
         min_samples=5,
         cluster_selection_epsilon=0,
         cluster_selection_method='leaf')
