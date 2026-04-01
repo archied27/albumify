@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
 import umap
+import math
 
 def preprocess(df):
     # release year
@@ -43,7 +44,7 @@ def preprocess(df):
     df_scaled = pd.DataFrame(scaler.fit_transform(df_ml), columns=df_ml.columns)
 
     # reduce
-    reducer = umap.UMAP(n_neighbors=30, n_components=10, min_dist=0, random_state=42)
+    reducer = umap.UMAP(n_neighbors=int(math.sqrt(len(df_scaled))), n_components=10, min_dist=0, metric='cosine')
     df_scaled = reducer.fit_transform(df_scaled)
 
     return df_scaled, df, scaler, reducer

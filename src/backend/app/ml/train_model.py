@@ -7,7 +7,11 @@ from hdbscan import HDBSCAN
 
 def train_model(df_scaled, df_ref):
     # takes in scaled df and reference df / original df
-    clusterer = HDBSCAN(min_cluster_size=8, min_samples=3, cluster_selection_method='leaf')
+    clusterer = HDBSCAN(
+        min_cluster_size=15, 
+        min_samples=5,
+        cluster_selection_epsilon=0,
+        cluster_selection_method='leaf')
     labels = clusterer.fit_predict(df_scaled)
 
     df_results = df_ref.copy()
