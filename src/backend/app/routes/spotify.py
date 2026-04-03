@@ -1,9 +1,8 @@
 """
-fastapi router for spotify services
+fastapi router for spotify authentication
 """
 
-from app.services.spotify.auth import login, callback
-from app.services.spotify.spotify_api import updateDb
+from app.services.spotify.auth import login, callback, getStatus
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -16,6 +15,6 @@ def auth():
 def cb(code: str):
     return callback(code)
 
-@router.get("/updatedb") # stores all spotify features into db
-def albums():
-    return updateDb()
+@router.get("/auth/status") # returns if spotify is authenticated
+def status():
+    return getStatus()

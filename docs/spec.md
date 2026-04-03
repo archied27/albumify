@@ -13,7 +13,7 @@ Status: in development
     - [x] last.fm: artist tags, album tags, 
 - [x] Derive new features
     - [x] era encoding i.e 70s, 80s, etc
-- [ ] Create a clustering model to cluster together albums
+- [x] Create a clustering model to cluster together albums
 - [ ] Add basic organisation and sorting features (year, etc)
 - [ ] Fully create a functional backend
 - [ ] Create the frontend

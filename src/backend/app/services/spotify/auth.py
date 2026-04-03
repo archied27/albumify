@@ -14,7 +14,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 SCOPE = "user-library-read"
 
-_token_store: dict = {}
+_token_store: dict = {"authenticated": False}
 
 def login():
     params = {
@@ -42,8 +42,13 @@ def callback(code: str):
     response = response.json()
 
     _token_store["access_token"] = response["access_token"]
+    _token_store["authenticated"] = True
+    
 
     return {"message": "Authenticated"}
 
 def getToken():
     return _token_store.get("access_token")
+
+def getStatus():
+    return {"authenticated": _token_store.get("authenticated")}

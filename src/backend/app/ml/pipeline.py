@@ -20,5 +20,3 @@ def add_clusters(db_path):
             cur.execute("UPDATE albums\
                 SET cluster = ?\
                 WHERE id = ?", (row['cluster'], row['album_id']))
-
-add_clusters("/media/shared/projects/albumify/src/backend/app/db/albumify.db")

@@ -9,6 +9,7 @@ import os
 import json
 import re
 import time
+from app.services.init_controller import status
 
 dotenv.load_dotenv()
 API_KEY = os.getenv("LAST_FM_KEY")
@@ -63,22 +64,31 @@ def updateDb():
             WHERE (albums.id = album_artists.album_id) AND (artists.id = album_artists.artist_id)\
             GROUP BY albums.id")
         albums = cur.fetchall()
+
+        total = len(albums)
+        fetched = 0
+
         # update db with all album tags
         for album in albums:
             albumUpdateDb(album[1], album[2], album[0], cur)
+            fetched+=1
+            status["progress"] = f"{fetched}/{total} albums"
 
         # get all artist ids and names
         cur.execute("SELECT id, artist_name\
             FROM artists")
         artists = cur.fetchall()
+
+        total = len(artists)
+        fetched = 0
+        
         # update db with all artists tags
         for artist in artists:
             artistUpdateDb(artist[1], artist[0], cur)
+            fetched+=1
+            status["progress"] = f"{fetched}/{total} artists"
+
     return {"message": "db updated"}
-
-        
-
-
 
 def cleanAlbumName(album):
     # returns a 'clean' album name

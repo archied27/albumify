@@ -15,7 +15,8 @@ def createAlbumDb(cur):
         release_date DATETIME,\
         cover_path TEXT,\
         avg_track_duration REAL,\
-        cluster INTEGER)")
+        cluster INTEGER DEFAULT -1,\
+        FOREIGN KEY(cluster) REFERENCES cluster_names(id) ON DELETE CASCADE)")
 
 def createArtistDb(cur):
     # creates artist table
@@ -82,6 +83,12 @@ def createArtistTagsDb(cur):
         FOREIGN KEY(artist_id) REFERENCES artists(id) ON DELETE CASCADE,\
         FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE)")
 
+def createclusterNamesDb(cur):
+    # creates cluster name db
+    cur.execute("CREATE TABLE IF NOT EXISTS cluster_names(\
+        id INTEGER PRIMARY KEY NOT NULL\
+        name TEXT NOT NULL)")
+
 def deleteAllTables(cur):
     cur.execute("DROP TABLE IF EXISTS artist_tags")
     cur.execute("DROP TABLE IF EXISTS album_tags")
@@ -91,8 +98,10 @@ def deleteAllTables(cur):
     cur.execute("DROP TABLE IF EXISTS artists")
     cur.execute("DROP TABLE IF EXISTS genres")
     cur.execute("DROP TABLE IF EXISTS albums")
+    cur.execute("DROP TABLE IF EXISTS cluster_names")
 
 def createAllTables(cur):
+    createclusterNamesDb(cur)
     createAlbumDb(cur)
     createGenreDb(cur)
     createArtistDb(cur)

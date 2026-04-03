@@ -3,7 +3,8 @@ handles spotify api calls
 and updating the database with spotify's features
 """
 
-from app.services.spotify.auth import login, getToken
+from app.services.spotify.auth import getToken
+from app.routers.init import status
 import requests
 import sqlite3
 
@@ -80,16 +81,25 @@ def updateDb():
         headers = {"Authorization": f"Bearer {token}"}
         params = {"limit": 50, "offset": 0}
 
+        total = 0
+        fetched = 0
+
         # loop until all users albums fetched
         while url:
             resp = requests.get(url, headers=headers, params=params)
             data = resp.json()
+
+            if total == 0:
+                total = data["total"]
+
             url = data["next"] # set up next url to fetch (has params already set)
 
             for i in data["items"]:
                 # for every album
                 album = i['album']
                 albumUpdateDb(album)
+                fetched+=1
+                status["progress"] = f"{fetched}/{total} albums"
             
             params = {}
 
