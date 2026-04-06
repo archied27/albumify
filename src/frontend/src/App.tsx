@@ -2,6 +2,8 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { AlbumListPage } from "./pages/AlbumListPage"
 import { FullAlbumPage } from "./pages/FullAlbumPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ClusterAlbumListPage } from "./pages/ClusterAlbumsPage";
+import { ClusterListPage } from "./pages/ClusterListPage";
 
 function App() {
   const theme = createTheme({
@@ -23,6 +25,8 @@ function App() {
         <Routes>
           <Route path="/albums" element={<AlbumListPage/>} />
           <Route path="/albums/:id" element={<FullAlbumPage/>}/>
+          <Route path="/clusters" element={<ClusterListPage/>} />
+          <Route path="/clusters/:id" element={<ClusterAlbumListPage/>}/>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
