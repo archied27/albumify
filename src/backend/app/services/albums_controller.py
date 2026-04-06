@@ -9,7 +9,7 @@ DB_PATH = "app/db/albumify.db"
 
 def get_all_albums():
     # returns all albums
-    data = {}
+    data = []
 
     with sqlite3.connect(DB_PATH) as conn:
         cur = conn.cursor()
@@ -22,7 +22,7 @@ def get_all_albums():
         result = cur.fetchall()
 
     for album in result:
-        data[album[0]] = {"name": album[1], "release_date": album[2], "cover_path": album[3], "artist_name": album[4], "artist_id": album[5]}
+        data.append({"id": album[0], "name": album[1], "release_date": str(album[2])[:4], "cover_path": album[3], "artist_name": album[4], "artist_id": album[5]}) 
     
     return data
 
@@ -44,6 +44,7 @@ def get_album_info(id):
                 JSON_GROUP_ARRAY(DISTINCT g.genre_name) AS genres,
                 JSON_GROUP_ARRAY(
                     DISTINCT JSON_OBJECT('tag', t_album.name, 'weight', at_album.weight)
+                    ORDER BY at_album.weight DESC
                 ) AS album_tags
             FROM albums a
             LEFT JOIN album_artists aa ON a.id = aa.album_id

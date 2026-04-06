@@ -8,7 +8,7 @@ DB_PATH = "app/db/albumify.db"
 
 def get_clusters():
     # returns each cluster with cluster name, album count
-    data = {}
+    data = []
 
     with sqlite3.connect(DB_PATH) as conn:
         cur = conn.cursor()
@@ -18,13 +18,13 @@ def get_clusters():
         result = cur.fetchall()
 
     for cluster in result:
-        data[cluster[0]] = {"name": cluster[1], "count": cluster[2]}
+        data.append({"id": cluster[0],"name": cluster[1], "count": cluster[2]})
 
     return data
 
 def cluster_albums(id):
     # returns all albums in a cluster
-    data = {}
+    data = []
 
     with sqlite3.connect(DB_PATH) as conn:
         cur = conn.cursor()
@@ -36,7 +36,7 @@ def cluster_albums(id):
         result = cur.fetchall()
 
     for album in result:
-        data[album[0]] = {"name": album[1], "release_date": album[2], "cover_path": album[3], "artist_name": album[4], "artist_id": album[5]}
+        data.append({"id": album[0], "name": album[1], "release_date": album[2], "cover_path": album[3], "artist_name": album[4], "artist_id": album[5]})
 
     return data
 
