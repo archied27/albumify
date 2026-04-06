@@ -6,23 +6,8 @@ from app.services.lastfm.lastfm_api import updateDb as lfmUpdateDb
 from app.services.spotify.spotify_api import updateDb as sUpdateDb
 from app.db.db_init import deleteAllTables, createAllTables
 from app.ml.pipeline import add_clusters
+from app.services.state import status, reset_status
 
-status = {
-    "running": False,
-    "stage": None,
-    "progress": None,
-    "done": False,
-    "error": None
-}
-
-def reset_status():
-    # resets status
-    global status
-    status["running"] = False
-    status["stage"] = None
-    status["progress"] = None
-    status["done"] = False
-    status["error"] = None
 
 def run_init(reset:bool):
     global status

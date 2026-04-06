@@ -14,8 +14,8 @@ Status: in development
 - [x] Derive new features
     - [x] era encoding i.e 70s, 80s, etc
 - [x] Create a clustering model to cluster together albums
-- [ ] Add basic organisation and sorting features (year, etc)
-- [ ] Fully create a functional backend
+- [x] Add basic organisation and sorting features (year, etc)
+- [x] Fully create a functional backend
 - [ ] Create the frontend
 ## Possible Extensions
 - More ML algorithms? Choose an album from a text prompt?

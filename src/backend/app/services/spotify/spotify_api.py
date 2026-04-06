@@ -4,7 +4,7 @@ and updating the database with spotify's features
 """
 
 from app.services.spotify.auth import getToken
-from app.routers.init import status
+from app.services.state import status
 import requests
 import sqlite3
 

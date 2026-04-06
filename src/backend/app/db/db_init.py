@@ -86,10 +86,14 @@ def createArtistTagsDb(cur):
 def createclusterNamesDb(cur):
     # creates cluster name db
     cur.execute("CREATE TABLE IF NOT EXISTS cluster_names(\
-        id INTEGER PRIMARY KEY NOT NULL\
+        id INTEGER PRIMARY KEY NOT NULL,\
         name TEXT NOT NULL)")
 
-def deleteAllTables(cur):
+def deleteAllTables():
+    con = sqlite3.connect('src/backend/app/db/albumify.db')
+    con.execute("PRAGMA foreign_keys = ON")
+    cur = con.cursor()
+
     cur.execute("DROP TABLE IF EXISTS artist_tags")
     cur.execute("DROP TABLE IF EXISTS album_tags")
     cur.execute("DROP TABLE IF EXISTS artist_genres")
@@ -100,7 +104,14 @@ def deleteAllTables(cur):
     cur.execute("DROP TABLE IF EXISTS albums")
     cur.execute("DROP TABLE IF EXISTS cluster_names")
 
-def createAllTables(cur):
+    con.commit()
+    con.close()
+
+def createAllTables():
+    con = sqlite3.connect('app/db/albumify.db')
+    con.execute("PRAGMA foreign_keys = ON")
+    cur = con.cursor()
+
     createclusterNamesDb(cur)
     createAlbumDb(cur)
     createGenreDb(cur)
@@ -111,15 +122,10 @@ def createAllTables(cur):
     createAlbumTagsDb(cur)
     createArtistTagsDb(cur)
 
-if __name__ == "__main__":
-    con = sqlite3.connect('src/backend/app/db/albumify.db')
-    con.execute("PRAGMA foreign_keys = ON")
-    cur = con.cursor()
-
-    # delete and create all databases for a full reset
-    deleteAllTables(cur)
-
-    createAllTables(cur)
-
     con.commit()
     con.close()
+
+if __name__ == "__main__":
+    
+    deleteAllTables()
+    createAllTables()

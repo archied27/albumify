@@ -4,9 +4,9 @@ and adds to db
 """
 
 import sqlite3
-from read_db import loadAlbumsDf
-from preprocess import preprocess
-from train_model import train_model
+from app.ml.read_db import loadAlbumsDf
+from app.ml.preprocess import preprocess
+from app.ml.train_model import train_model
 
 def add_clusters(db_path):
     df = loadAlbumsDf(db_path)
@@ -20,3 +20,6 @@ def add_clusters(db_path):
             cur.execute("UPDATE albums\
                 SET cluster = ?\
                 WHERE id = ?", (row['cluster'], row['album_id']))
+
+            cur.execute("INSERT OR IGNORE INTO cluster_names\
+                (id, name) VALUES (?, ?)", [row['cluster'], row['cluster']])

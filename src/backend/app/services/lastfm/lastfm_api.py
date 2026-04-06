@@ -9,7 +9,7 @@ import os
 import json
 import re
 import time
-from app.services.init_controller import status
+from app.services.state import status
 
 dotenv.load_dotenv()
 API_KEY = os.getenv("LAST_FM_KEY")
