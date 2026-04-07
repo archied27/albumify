@@ -1,5 +1,5 @@
 import { AppBar, Button, Toolbar, Typography, Box, InputBase, IconButton } from "@mui/material";
-import { Album, Folder, Search } from "@mui/icons-material";
+import { Album, Folder, Person, Search } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -55,8 +55,9 @@ export function TopBar()
                             bgcolor: 'background.default',
                             px: 2, py: 0.5,
                             borderRadius: 2,
-                            width: { xs: '100%', md: 300 },
-                            color: 'text.primary'
+                            width: { xs: '100%', md: 400 },
+                            color: 'text.primary',
+                            fontSize: 13
                         }}
                     />
                 ) : (
@@ -64,6 +65,13 @@ export function TopBar()
                         <Search />
                     </IconButton>
                 )}
+
+                <Button onClick={() => navigate("/user")}
+                        sx={{
+                            color: location.pathname === "/user" ?
+                                "primary.main" : "text.secondary",
+                                fontWeight: location.pathname === "/user" ? 700 : 400
+                        }}><Person /></Button>
 
             </Toolbar>
         </AppBar>

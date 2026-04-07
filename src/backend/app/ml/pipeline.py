@@ -21,5 +21,6 @@ def add_clusters(db_path):
                 SET cluster = ?\
                 WHERE id = ?", (row['cluster'], row['album_id']))
 
-            cur.execute("INSERT OR IGNORE INTO cluster_names\
-                (id, name) VALUES (?, ?)", [row['cluster'], row['cluster']])
+            cur.execute("INSERT INTO cluster_names\
+                (id, name) VALUES (?, ?)\
+                ON CONFLICT(id) DO UPDATE SET name=excluded.name", [row['cluster'], row['cluster']])

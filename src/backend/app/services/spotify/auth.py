@@ -4,6 +4,7 @@ Handles authenticating user with Spotify's API
 import os
 import requests
 import fastapi
+from fastapi.responses import RedirectResponse
 import dotenv
 from urllib.parse import urlencode
 
@@ -44,8 +45,9 @@ def callback(code: str):
     _token_store["access_token"] = response["access_token"]
     _token_store["authenticated"] = True
     
+    response = RedirectResponse(url="http://localhost:5173/user")
 
-    return {"message": "Authenticated"}
+    return response
 
 def getToken():
     return _token_store.get("access_token")

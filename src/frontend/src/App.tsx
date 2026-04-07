@@ -6,6 +6,7 @@ import { ClusterAlbumListPage } from "./pages/ClusterAlbumsPage";
 import { ClusterListPage } from "./pages/ClusterListPage";
 import { TopBar } from "./components/TopBar";
 import { SearchListPage } from "./pages/SearchListPage";
+import { UserPage } from "./pages/UserPage";
 
 function App() {
   const theme = createTheme({
@@ -31,6 +32,7 @@ function App() {
           <Route path="/clusters" element={<ClusterListPage/>} />
           <Route path="/clusters/:id" element={<ClusterAlbumListPage/>}/>
           <Route path="/search" element={<SearchListPage/>} />
+          <Route path="/user" element={<UserPage/>} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

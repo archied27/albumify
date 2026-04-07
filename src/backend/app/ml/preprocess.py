@@ -44,7 +44,7 @@ def preprocess(df):
     df_scaled = pd.DataFrame(scaler.fit_transform(df_ml), columns=df_ml.columns)
 
     # reduce
-    reducer = umap.UMAP(n_neighbors=int(math.sqrt(len(df_scaled))), n_components=10, min_dist=0, metric='cosine')
+    reducer = umap.UMAP(n_neighbors=int(math.sqrt(len(df_scaled))), n_components=20, min_dist=0, metric='cosine')
     df_scaled = reducer.fit_transform(df_scaled)
 
     return df_scaled, df, scaler, reducer
