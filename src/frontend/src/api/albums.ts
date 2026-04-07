@@ -23,7 +23,7 @@ type FullAlbum = {
     name: string,
     url: string,
     cover_path: string,
-    cluster: number,
+    cluster: string,
     release_date: string,
     popularity: number,
     artists: Artist[],
@@ -39,5 +39,12 @@ export function getAlbums(): Promise<SimpleAlbum[]>
 
 export function getAlbumInfo(id: string): Promise<FullAlbum>
 {
-    return client.get<FullAlbum>(`/albums/${id}`).then(res => res.data);
+    return client.get<FullAlbum>(`/albums/${id}`)
+        .then(res => res.data);
+}
+
+export function searchAlbums(q: string): Promise<SimpleAlbum[]>
+{
+    return client.get<SimpleAlbum[]>(`/albums/search?q=${q}`)
+        .then(res => res.data);
 }

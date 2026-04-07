@@ -3,7 +3,8 @@ import client from './client.ts'
 type SimpleCluster = {
     id: string,
     name: string,
-    count: number
+    count: number,
+    cover_path: string
 }
 
 type SimpleAlbum = {

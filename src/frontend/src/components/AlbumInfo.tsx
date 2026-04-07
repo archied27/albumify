@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAlbumInfo } from "../api/albums";
 import { Box, Grid, Skeleton, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 type AlbumInfoProps = {
     id: string
@@ -20,7 +21,7 @@ type FullAlbum = {
     name: string,
     url: string,
     cover_path: string,
-    cluster: number,
+    cluster: string,
     release_date: string,
     popularity: number,
     artists: Artist[],
@@ -31,6 +32,7 @@ type FullAlbum = {
 export function AlbumInfo({ id }: AlbumInfoProps)
 {
     const [album, setAlbum] = useState<FullAlbum | null>(null);
+    const navigator = useNavigate();
 
     useEffect(() => {
         async function fetchAlbum(id: string) {
@@ -52,11 +54,9 @@ export function AlbumInfo({ id }: AlbumInfoProps)
 
                 <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
                     <a href={album.url} style={{color: "inherit", textDecoration: "none"}}><Typography variant="h4" fontWeight={600}>{album.name}</Typography></a>
-                    {album.artists.map((artist) => 
-                        <Typography variant="subtitle1" color="text.secondary">{artist.name}</Typography>)}
+                    <Typography variant="body2" color="text.secondary">{album.artists.map(artist => `${artist.name} · `)} {album.release_date}</Typography>
 
-                    <Typography variant="body2" fontWeight={500}>Cluster {album.cluster}</Typography>
-                    <Typography variant="body2" color="text.secondary">{album.release_date}</Typography>
+                    <Typography variant="body2" fontWeight={500} onClick={() => navigator(`/clusters/${album.cluster}`)} sx={{cursor: "pointer"}}>{album.cluster}</Typography>
                     
                     {(album.genres[0]) ? 
                         <Box>

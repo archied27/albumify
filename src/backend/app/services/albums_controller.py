@@ -37,7 +37,7 @@ def get_album_info(id):
                 a.album_name,
                 a.url,
                 a.cover_path,
-                a.cluster,
+                cluster_names.name,
                 a.release_date,
                 a.album_popularity,
                 JSON_GROUP_ARRAY(DISTINCT JSON_OBJECT('name', ar.artist_name, 'id', ar.id)) AS artists,
@@ -53,6 +53,7 @@ def get_album_info(id):
             LEFT JOIN genres g ON ag.genre_id = g.id
             LEFT JOIN album_tags at_album ON a.id = at_album.album_id
             LEFT JOIN tags t_album ON at_album.tag_id = t_album.id
+            LEFT JOIN cluster_names ON a.cluster = cluster_names.id
             WHERE a.id = ?
             GROUP BY a.id
             """, [id,])
@@ -69,7 +70,7 @@ def get_album_info(id):
 
 def search_albums(query):
     # returns all albums with album name / artist name in search
-    data = {}
+    data = []
 
     with sqlite3.connect(DB_PATH) as conn:
         cur = conn.cursor()
@@ -84,6 +85,6 @@ def search_albums(query):
         result = cur.fetchall()
 
         for album in result:
-            data[album[0]] = {"name": album[1], "release_date": album[2], "cover_path": album[3], "artist": album[4], "artist_id": album[5]}
+            data.append({"id": album[0], "name": album[1], "release_date": str(album[2])[:4], "cover_path": album[3], "artist_name": album[4], "artist_id": album[5]})
 
     return data
