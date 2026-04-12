@@ -16,7 +16,12 @@ Status: in development
 - [x] Create a clustering model to cluster together albums
 - [x] Add basic organisation and sorting features (year, etc)
 - [x] Fully create a functional backend
-- [ ] Create the frontend
+- [x] Create the frontend
+- [ ] Add frontend renaming
+- [ ] Add frontend page labels
+- [ ] Add genre lists / tags
+- [ ] Add order by's on all albums page
+- [ ] Add random album in context
 ## Possible Extensions
 - More ML algorithms? Choose an album from a text prompt?
 - Random Album

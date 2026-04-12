@@ -33,7 +33,7 @@ def cluster_albums(id):
             FROM album_artists JOIN albums ON (album_artists.album_id = albums.id) JOIN artists ON (album_artists.artist_id = artists.id) \
             WHERE albums.cluster = ?\
             GROUP BY albums.id\
-            ORDER BY artists.artist_name", [id,])
+            ORDER BY artists.artist_name, albums.release_date", [id,])
         result = cur.fetchall()
 
     for album in result:

@@ -17,7 +17,8 @@ def get_all_albums():
             albums.cover_path, artists.artist_name, artists.id\
             FROM album_artists JOIN albums ON (album_artists.album_id = albums.id)\
             JOIN artists ON (album_artists.artist_id = artists.id)\
-            GROUP BY albums.id")
+            GROUP BY albums.id\
+            ORDER BY albums.release_date DESC")
 
         result = cur.fetchall()
 
