@@ -90,7 +90,7 @@ def createclusterNamesDb(cur):
         name TEXT NOT NULL)")
 
 def deleteAllTables():
-    con = sqlite3.connect('src/backend/app/db/albumify.db')
+    con = sqlite3.connect('app/db/albumify.db')
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
 

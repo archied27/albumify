@@ -114,8 +114,11 @@ def getAlbumTags(album, artist):
     # clean data to only show tag name and corresponding weight
     if resp.status_code == 200:
         data = resp.json()
-        tags = data['toptags']['tag']
-        tags = [{"name": tag['name'].lower(), "weight": tag['count']} for tag in tags]
+        try:
+            tags = data['toptags']['tag']
+            tags = [{"name": tag['name'].lower(), "weight": tag['count']} for tag in tags]
+        except:
+            return tags
     else:
         print(f"ERROR WITH {album}")
 

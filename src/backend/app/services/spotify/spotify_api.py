@@ -87,6 +87,7 @@ def updateDb():
         # loop until all users albums fetched
         while url:
             resp = requests.get(url, headers=headers, params=params)
+            print(resp)
             data = resp.json()
 
             if total == 0:

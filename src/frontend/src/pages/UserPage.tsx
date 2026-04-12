@@ -72,13 +72,19 @@ export function UserPage()
                     <LinearProgress
                         variant="determinate"
                         value={getProgressPercent(status.progress)}
+                        color="success"
                         sx={{ width: "100%", borderRadius: 1 }}/>
-                </>:
-                status["error"] ? <Typography variant="body2" color="error">{status["error"]}</Typography>  : <></>}
+                </>: <></>
+                }
             </Box>
 
-            :<Button onClick={() => startInit()}
-            sx={{color: "text.secondary", bgcolor: "#393838"}}>Start Initialisation</Button>
+            :
+            <>
+                <Button onClick={() => startInit()}
+                sx={{color: "text.secondary", bgcolor: "#393838"}}>Start Initialisation</Button>
+                {status["error"] ? <Typography color="error">{status["error"]}</Typography> : <></>}
+                
+            </>
             ): 
             <Skeleton variant="rectangular" height={"100%"} />}
         </Box>

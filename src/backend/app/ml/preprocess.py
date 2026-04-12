@@ -23,9 +23,9 @@ def preprocess(df):
 
     # then tags
     all_album_tags = set(t['tag'] for tags in df['album_tags'].dropna() for t in tags)
-    album_tag_df = pd.DataFrame(df['album_tags'].apply(lambda x: buildTagVector(x, all_album_tags)).tolist())
+    album_tag_df = pd.DataFrame(df['album_tags'].apply(lambda x: buildTagVector(x, all_album_tags, prefix='atag')).tolist())
     all_artist_tags = set(t['tag'] for tags in df['artist_tags'].dropna() for t in tags)
-    artist_tag_df = pd.DataFrame(df['artist_tags'].apply(lambda x: buildTagVector(x, all_artist_tags)).tolist())
+    artist_tag_df = pd.DataFrame(df['artist_tags'].apply(lambda x: buildTagVector(x, all_artist_tags, prefix='rtag')).tolist())
 
     # build ml df
     df_ml = df.drop(columns=['album_id', 'album_name', 'artist_names', 
@@ -44,7 +44,7 @@ def preprocess(df):
     df_scaled = pd.DataFrame(scaler.fit_transform(df_ml), columns=df_ml.columns)
 
     # reduce
-    reducer = umap.UMAP(n_neighbors=int(math.sqrt(len(df_scaled))), n_components=20, min_dist=0, metric='cosine')
+    reducer = umap.UMAP(n_neighbors=int(math.sqrt(len(df_scaled))), n_components=25, min_dist=0, metric='cosine')
     df_scaled = reducer.fit_transform(df_scaled)
 
     return df_scaled, df, scaler, reducer
@@ -57,9 +57,9 @@ def parseReleaseYear(date):
         return parsed.year
     return int(str(date)[:4])
 
-def buildTagVector(tags, all_tags):
-    vec = {f"atag_{t}": 0 for t in all_tags}
+def buildTagVector(tags, all_tags, prefix='tag'):
+    vec = {f"{prefix}_{t}": 0 for t in all_tags}
     if tags:
         for t in tags:
-            vec[f"atag_{t['tag']}"] = t['weight']
+            vec[f"{prefix}_{t['tag']}"] = t['weight']
     return vec
