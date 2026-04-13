@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { getClusters } from "../api/clusters";
+import { useState, useEffect, useRef } from "react";
+import { getClusters, renameCluster } from "../api/clusters";
 import { useNavigate } from "react-router-dom";
-import { Grid, Box, Skeleton, Typography } from "@mui/material";
+import { Grid, Box, Skeleton, Typography, IconButton, TextField } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 
 type SimpleCluster = {
     id: string,
@@ -13,6 +14,11 @@ type SimpleCluster = {
 export function ClusterList()
 {
     const [clusters, setClusters] = useState<SimpleCluster[] | null>(null);
+    const [hoverId, setHoverId] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editingName, setEditingName] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,11 +29,44 @@ export function ClusterList()
         fetchClusters();
     }, [])
 
+    function handleEditClick(e: React.MouseEvent, cluster: SimpleCluster)
+    {
+        e.stopPropagation();
+        setEditingId(cluster.id);
+        setEditingName(cluster.name);
+        setTimeout(() => {
+            inputRef.current?.focus();
+            inputRef.current?.select();
+        }, 50);
+    }
+
+    async function handleRenameConfirm(e: React.MouseEvent) {
+        e.stopPropagation();
+        if (!editingId || !editingName.trim()) return;
+
+        await renameCluster({"id": editingId, "name": editingName.trim()});
+
+        setClusters(prev =>
+            prev?.map(c => c.id === editingId ? { ...c, name: editingName.trim() } : c) ?? null
+        );
+        setEditingId(null);
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent) {
+        if (e.key === "Enter") handleRenameConfirm(e as any);
+        if (e.key === "Escape") {
+            setEditingId(null);
+        }
+    }
+
     return (
         <Grid container spacing={2} p={2} display="flex">
             {clusters ? clusters.map((cluster) => (
                 <Grid key={cluster.id} size={{xs:4, sm:3, md:2}}>
                     <Box onClick={() => navigate(`/clusters/${cluster.id}`)}
+                        onMouseEnter={() => setHoverId(cluster.id)}
+                        onMouseLeave={() => {setHoverId(null) 
+                            setEditingId(null)}}
                         sx={{
                             cursor: "pointer",
                             position: "relative",
@@ -74,13 +113,48 @@ export function ClusterList()
                             px: 1,
                             }}
                         >
-                            <Typography variant="body1" fontWeight={700}>
-                            {cluster.name}
-                            </Typography>
+                            {editingId === cluster.id ? (
+                            <Box onClick={e => e.stopPropagation()}
+                            sx={{ display: "flex", alignItems: "center", gap: 0.5, width: "100%", px: 1 }}>
+                                <TextField 
+                                    inputRef={inputRef}
+                                    value={editingName}
+                                    onChange={e => setEditingName(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    size="small"
+                                    variant="standard"
+                                    sx={{
+                                        flex: 1,
+                                        input: { color: "white", textAlign: "center", fontWeight: 700 },
+                                        "& .MuiInput-underline:before": { borderBottomColor: "rgba(255,255,255,0.5)" },
+                                        "& .MuiInput-underline:after": { borderBottomColor: "white" },
+                                    }}/>
+                            </Box>)  
+                            
+                            : (<Box sx={{ position: "relative", display: "flex",  alignItems: "center", justifyContent: "center", gap: 0.5}}>
+                                <Typography variant="body1" fontWeight={700}>
+                                    {cluster.name}
+                                </Typography>
+
+                                <IconButton size="small"
+                                    onClick={e => handleEditClick(e, cluster)}
+                                    sx={{
+                                        color: "white",
+                                        p: 0.75,
+                                        opacity: hoverId === cluster.id ? 1 : 0,
+                                        transition: "opacity 0.2s",
+                                        position: "absolute",
+                                        left: "100%"
+                                    }}>
+                                        <Edit sx={{ fontSize: 14 }}/>
+                                </IconButton>
+                            </Box> )}
+
                             <Typography variant="caption">
                             Albums: {cluster.count}
                             </Typography>
                         </Box>
+                            
 
                     </Box>
                 </Grid>

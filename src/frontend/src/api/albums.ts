@@ -24,6 +24,7 @@ type FullAlbum = {
     url: string,
     cover_path: string,
     cluster: string,
+    cluster_id: string,
     release_date: string,
     popularity: number,
     artists: Artist[],

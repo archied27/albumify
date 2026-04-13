@@ -22,6 +22,7 @@ type FullAlbum = {
     url: string,
     cover_path: string,
     cluster: string,
+    cluster_id: string,
     release_date: string,
     popularity: number,
     artists: Artist[],
@@ -56,7 +57,7 @@ export function AlbumInfo({ id }: AlbumInfoProps)
                     <a href={album.url} style={{color: "inherit", textDecoration: "none"}}><Typography variant="h4" fontWeight={600}>{album.name}</Typography></a>
                     <Typography variant="body2" color="text.secondary">{album.artists.map(artist => `${artist.name} · `)} {album.release_date}</Typography>
 
-                    <Typography variant="body2" fontWeight={500} onClick={() => navigator(`/clusters/${album.cluster}`)} sx={{cursor: "pointer"}}>{album.cluster}</Typography>
+                    <Typography variant="body2" fontWeight={500} onClick={() => navigator(`/clusters/${album.cluster_id}`)} sx={{cursor: "pointer"}}>{album.cluster}</Typography>
                     
                     {(album.genres[0]) ? 
                         <Box>

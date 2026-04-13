@@ -17,7 +17,7 @@ Status: in development
 - [x] Add basic organisation and sorting features (year, etc)
 - [x] Fully create a functional backend
 - [x] Create the frontend
-- [ ] Add frontend renaming
+- [x] Add frontend renaming
 - [ ] Add frontend page labels
 - [ ] Add genre lists / tags
 - [ ] Add order by's on all albums page

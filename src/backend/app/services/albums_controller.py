@@ -39,6 +39,7 @@ def get_album_info(id):
                 a.url,
                 a.cover_path,
                 cluster_names.name,
+                cluster_names.id,
                 a.release_date,
                 a.album_popularity,
                 JSON_GROUP_ARRAY(DISTINCT JSON_OBJECT('name', ar.artist_name, 'id', ar.id)) AS artists,
@@ -60,12 +61,12 @@ def get_album_info(id):
             """, [id,])
         result = cur.fetchall()[0]
     
-        data = {"name": result[0], "url": result[1], "cover_path": result[2], "cluster": result[3], "release_date": result[4],
-            "popularity": result[5]}
+        data = {"name": result[0], "url": result[1], "cover_path": result[2], "cluster": result[3], "cluster_id": result[4], "release_date": result[5],
+            "popularity": result[6]}
 
-        data["artists"] = json.loads(result[6])
-        data["genres"] = json.loads(result[7])
-        data["tags"] = json.loads(result[8])
+        data["artists"] = json.loads(result[7])
+        data["genres"] = json.loads(result[8])
+        data["tags"] = json.loads(result[9])
 
     return data
 
