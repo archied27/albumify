@@ -23,7 +23,7 @@ def train_model(df_scaled, df_ref):
     best_cluster = np.argmax(soft, axis=1)
     best_prob = soft[np.arange(len(soft)), best_cluster]
 
-    assigned_soft = best_prob >= 0.01
+    assigned_soft = best_prob >= 0.035
     noise_indices = np.where(noise_mask)[0]
     labels[noise_indices[assigned_soft]] = best_cluster[assigned_soft]
 

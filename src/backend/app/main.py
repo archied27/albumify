@@ -8,7 +8,8 @@ app = FastAPI(title="Albumify Backend")
 
 origins = [
     "http://localhost:3000", 
-    "http://localhost:5173",  
+    "http://localhost:5173",
+    "http://100.120.212.116:5173"
 ]
 
 app.add_middleware(

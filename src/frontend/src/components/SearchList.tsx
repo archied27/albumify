@@ -32,7 +32,7 @@ export function SearchList({ q }: SearchListProps) {
   return (
     <Grid container spacing={2} p={2}>
       {albums ? albums.map((album) => (
-        <Grid key={album.id} size={{xs:4, sm:3, md:2}}> 
+        <Grid key={album.id} size={{xs:6, sm:3, md:2}}> 
           <Box onClick={() => navigate(`/albums/${album.id}`)}
             sx={{
             cursor: "pointer",

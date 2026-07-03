@@ -42,7 +42,7 @@ export function ClusterList()
 
     async function handleRenameConfirm(e: React.MouseEvent) {
         e.stopPropagation();
-        if (!editingId || !editingName.trim()) return;
+        if (editingId === null || !editingName.trim()) return;
 
         await renameCluster({"id": editingId, "name": editingName.trim()});
 
@@ -62,7 +62,7 @@ export function ClusterList()
     return (
         <Grid container spacing={2} p={2} display="flex">
             {clusters ? clusters.map((cluster) => (
-                <Grid key={cluster.id} size={{xs:4, sm:3, md:2}}>
+                <Grid key={cluster.id} size={{xs:6, sm:3, md:2}}>
                     <Box onClick={() => navigate(`/clusters/${cluster.id}`)}
                         onMouseEnter={() => setHoverId(cluster.id)}
                         onMouseLeave={() => {setHoverId(null) 
